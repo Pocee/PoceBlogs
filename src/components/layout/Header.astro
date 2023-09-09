@@ -1,0 +1,174 @@
+---
+import ThemeToggle from "../ThemeToggle.astro";
+import Search from "../Search.astro";
+import { menuLinks } from "@/site-config";
+
+const url = new URL(Astro.request.url);
+---
+
+<script>
+	import { toggleClass } from "@/utils";
+	let headerEl: HTMLElement;
+	let menuButtonEl: HTMLButtonElement;
+	let menuOpen = false;
+
+	function toggleMobileMenu() {
+		toggleClass(headerEl, "menu-open");
+		menuOpen = !menuOpen;
+		menuButtonEl.setAttribute("aria-expanded", menuOpen.toString());
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		headerEl = document.getElementById("main-header")!;
+		menuButtonEl = document.getElementById("toggle-navigation-menu") as HTMLButtonElement;
+		menuButtonEl.addEventListener("click", toggleMobileMenu);
+	});
+
+	document.addEventListener("astro:after-swap", () => {
+		if (menuOpen) toggleMobileMenu();
+	});
+</script>
+
+<header
+	id="main-header"
+	class="group relative mb-28 flex items-center sm:ps-[4.5rem]"
+	transition:persist
+>
+	<div class="flex sm:flex-col">
+		<a
+			href="/"
+			class="inline-flex items-center grayscale hover:filter-none sm:relative sm:inline-block"
+			aria-current={url.pathname === "/" ? "page" : false}
+		>
+			<svg
+				version="1.1"
+				id="Layer_1"
+				xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				x="0px"
+				y="0px"
+				viewBox="100 50 350 500"
+				style="enable-background:new 0 0 500 500;"
+				xml:space="preserve"
+				class="me-10 h-10 w-6 sm:absolute sm:start-[-4.5rem] sm:me-0 sm:h-20 sm:w-12"
+				aria-hidden="true"
+				focusable="false"
+			>
+				<title>Logo</title>
+				<style type="text/css">
+					.st0 {
+						display: none;
+					}
+					.st1 {
+						display: inline;
+						fill: #b04304;
+					}
+					.st2 {
+						display: inline;
+						fill: #ff5d01;
+					}
+					.st3 {
+						display: inline;
+						fill: #53c68c;
+					}
+					.st4 {
+						fill: #b04304;
+					}
+					.st5 {
+						fill: #ff5d01;
+					}
+					.st6 {
+						fill: #53c68c;
+					}
+				</style>
+				<g class="st0">
+					<path
+						class="st1"
+						d="M295.3,103.3v-40L340.7,90v40L295.3,103.3L295.3,103.3z M250,63.3l-45.3-26.7v426.7L250,490V63.3z"
+					></path>
+					<path
+						class="st2"
+						d="M250,129.9l45.3-26.7l45.3,26.7l-45.3,26.7L250,129.9z M204.7,36.7L250,10l45.3,26.7L250,63.3L204.7,36.7z
+					 M295.3,63.3l45.3-26.7L386,63.3l-45.3,26.7L295.3,63.3L295.3,63.3z M114,223.3l45.3-26.7l45.3,26.7l-45.3,26.7L114,223.3z
+					 M250,249.9l-45.3-26.7v53.3L250,249.9z"
+					></path>
+					<path
+						class="st3"
+						d="M250,63.3l45.3-26.7v120l45.3-26.7V90L386,63.3V170l-90.7,53.3v240L250,490V316.7L159.3,370V250l45.3-26.7
+						v53.3L250,250V63.3z"
+					></path>
+					<path class="st1" d="M159.3,250L114,223.3v120l45.3,26.7V250z"></path>
+				</g>
+				<g>
+					<path class="st4" d="M250,90v60l67.9,40l0.1,0v-60L250,90z"></path>
+					<polygon class="st4" points="182,90 182,490 114,450 114,50 	"></polygon>
+					<path
+						class="st5"
+						d="M318,49.9l-68,40l68,40l68-40L318,49.9z M182,10l-68,40l68,40l68-40L182,10z M250,149.9l-68,40l68,40l67.9-40
+						l0.1,0L250,149.9z"
+					></path>
+					<path
+						class="st6"
+						d="M182,370V90l68-40v180l68-40v-60l68-40v160l-136,80v120l-68,40v-30V370z"></path>
+				</g>
+			</svg>
+			<span class="text-xl font-bold sm:text-2xl">Poce</span>
+		</a>
+		<nav
+			id="navigation-menu"
+			class="absolute -inset-x-4 top-14 hidden flex-col items-end gap-y-4 rounded-md bg-bgColor/[.85] py-4 text-accent shadow backdrop-blur group-[.menu-open]:z-50 group-[.menu-open]:flex sm:static sm:z-auto sm:-ms-4 sm:mt-1 sm:flex sm:flex-row sm:items-center sm:divide-x sm:divide-dashed sm:divide-accent sm:rounded-none sm:bg-transparent sm:py-0 sm:shadow-none sm:backdrop-blur-none"
+			aria-label="Main menu"
+		>
+			{
+				menuLinks.map((link) => (
+					<a
+						href={link.path}
+						class="px-4 py-4 sm:py-0 sm:hover:underline"
+						aria-current={url.pathname === link.path ? "page" : false}
+						rel="prefetch"
+					>
+						{link.title}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+	<Search />
+	<ThemeToggle />
+	<button
+		id="toggle-navigation-menu"
+		class="group relative ms-4 h-7 w-7 sm:invisible sm:hidden"
+		type="button"
+		aria-label="Open main menu"
+		aria-expanded="false"
+		aria-haspopup="menu"
+	>
+		<svg
+			id="line-svg"
+			class="absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 transition-all group-aria-expanded:scale-0 group-aria-expanded:opacity-0"
+			aria-hidden="true"
+			focusable="false"
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+		>
+			<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5"></path>
+		</svg>
+		<svg
+			id="cross-svg"
+			class="absolute start-1/2 top-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 scale-0 text-accent opacity-0 transition-all group-aria-expanded:scale-100 group-aria-expanded:opacity-100"
+			class="text-accent"
+			aria-hidden="true"
+			focusable="false"
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke-width="1.5"
+			stroke="currentColor"
+		>
+			<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+		</svg>
+	</button>
+</header>
